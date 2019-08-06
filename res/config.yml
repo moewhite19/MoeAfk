@@ -1,0 +1,6 @@
+ver: 2
+debug: false
+#当挂机人数超过指定数量则请出挂机玩家
+maxPlayer: 10
+MaximumTime: 120
+
