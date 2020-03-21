@@ -1,6 +1,5 @@
 package cn.whiteg.moeAfk;
 
-import cn.whiteg.mmocore.CommandInterface;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

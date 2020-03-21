@@ -2,7 +2,8 @@ name: MoeAfk
 main: cn.whiteg.moeAfk.MoeAfk
 version: 1.1
 author: MoeWhite
-softdepend: [MMOCore]
+depend: [MMOCore]
+softdepend: []
 api-version: 1.14
 commands:
   moeafk:

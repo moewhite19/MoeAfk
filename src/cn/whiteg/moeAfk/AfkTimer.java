@@ -5,9 +5,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.server.BroadcastMessageEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -39,8 +42,9 @@ public class AfkTimer implements Listener {
              */
             @Override
             public void run() {
-
                 Iterator<Map.Entry<UUID, AfkStaus>> it = map.entrySet().iterator();
+                Player kickPlayer = null;
+                int afktime = 0;
                 while (it.hasNext()) {
                     final Map.Entry<UUID, AfkStaus> e = it.next();
                     final AfkStaus s = e.getValue();
@@ -50,8 +54,20 @@ public class AfkTimer implements Listener {
                     }
                     s.check();
                     if (canKick && s.isAfkin() && s.getTime() > kickTime){
-                        Bukkit.getScheduler().runTask(plugin,() -> s.player.kickPlayer("在线玩家过多 已请出闲置玩家"));
+                        if (kickPlayer == null){
+                            kickPlayer = s.player;
+                            afktime = s.getTime();
+                        } else {
+                            int i = s.getTime();
+                            if (i > afktime){
+                                kickPlayer = s.getPlayer();
+                                afktime = s.getTime();
+                            }
+                        }
                     }
+                }
+                if (kickPlayer != null){
+                    kickPlayer.kickPlayer("在线玩家过多,已请出闲置玩家.");
                 }
             }
         }.runTaskTimer(plugin,20,20);
@@ -76,6 +92,21 @@ public class AfkTimer implements Listener {
         setCanKick();
     }
 
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void playerOnTp(PlayerTeleportEvent event) {
+        Player player = event.getPlayer();
+        AfkStaus s = map.get(player.getUniqueId());
+        if (s == null) return;
+        s.setPitch(event.getTo().getPitch());
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void playerOnRespawn(PlayerRespawnEvent event) {
+        AfkStaus s = getAfkStaus(event.getPlayer());
+        if (s == null) return;
+        s.setPitch(event.getRespawnLocation().getPitch());
+    }
+
     public AfkStaus getAfkStaus(Player player) {
         return map.get(player.getUniqueId());
     }
@@ -87,6 +118,15 @@ public class AfkTimer implements Listener {
     public void unreg() {
         BroadcastMessageEvent.getHandlerList().unregister(this);
         bt.cancel();
+    }
+
+    public Map<UUID, AfkStaus> getMap() {
+        return map;
+    }
+
+    public void stop() {
+        bt.cancel();
+        map.clear();
     }
 
     public class AfkStaus {
@@ -144,5 +184,19 @@ public class AfkTimer implements Listener {
                 comt = 0;
             }
         }
+
+        public Player getPlayer() {
+            return player;
+        }
+
+        public float getPitch() {
+            return p;
+        }
+
+        public void setPitch(float p) {
+            this.p = p;
+        }
+
+
     }
 }

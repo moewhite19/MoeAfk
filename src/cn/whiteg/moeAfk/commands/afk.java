@@ -1,7 +1,7 @@
 package cn.whiteg.moeAfk.commands;
 
-import cn.whiteg.mmocore.CommandInterface;
 import cn.whiteg.moeAfk.AfkTimer;
+import cn.whiteg.moeAfk.CommandInterface;
 import cn.whiteg.moeAfk.MoeAfk;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
