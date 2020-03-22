@@ -2,6 +2,7 @@ ver: 3
 debug: false
 #当挂机人数超过指定数量则请出挂机玩家
 maxPlayer: 10
+#玩家静止多少秒后进入Afk状态
 MaximumTime: 120
 #挂机玩家不需要睡觉也能跳过夜晚
 SleepingIgnored: true
