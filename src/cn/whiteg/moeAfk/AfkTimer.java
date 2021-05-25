@@ -21,19 +21,17 @@ public class AfkTimer implements Listener {
     final MoeAfk plugin;
     final Map<UUID, AfkStaus> map = new HashMap<>();
     final BukkitTask bt;
-    final private int kickTime;
     private boolean canKick = false;
 
 
     public AfkTimer() {
         plugin = MoeAfk.plugin;
-        kickTime = plugin.setting.maximumTime + 10;
         bt = new BukkitRunnable() {
             @Override
             public void run() {
                 Iterator<Map.Entry<UUID, AfkStaus>> it = map.entrySet().iterator();
                 Player kickPlayer = null;
-                int afktime = 0;
+                int kickTime = plugin.setting.maximumTime + 10;
                 while (it.hasNext()) {
                     final Map.Entry<UUID, AfkStaus> e = it.next();
                     final AfkStaus s = e.getValue();
@@ -45,12 +43,12 @@ public class AfkTimer implements Listener {
                     if (canKick && s.isAfkin() && s.getTime() > kickTime){
                         if (kickPlayer == null){
                             kickPlayer = s.player;
-                            afktime = s.getTime();
+                            kickTime = s.getTime();
                         } else {
-                            int i = s.getTime();
-                            if (i > afktime){
+                            int time = s.getTime();
+                            if (time > kickTime){
                                 kickPlayer = s.getPlayer();
-                                afktime = s.getTime();
+                                kickTime = time;
                             }
                         }
                     }

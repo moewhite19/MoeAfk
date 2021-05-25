@@ -4,8 +4,10 @@ version: 1.1
 author: MoeWhite
 depend: [MMOCore]
 softdepend: []
-api-version: 1.14
+api-version: 1.13
 commands:
   moeafk:
     description: The is MoeAfk
     aliases: ['ma']
+  afk:
+    description: Afk Command

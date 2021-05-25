@@ -3,16 +3,18 @@ package cn.whiteg.moeAfk;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 
 import java.util.*;
 
 public class CommandManage extends CommandInterface {
-    public Map<String, CommandInterface> CommandMap = new HashMap();
+    final public SubCommand subCommand = new SubCommand();
+    public Map<String, CommandInterface> commandMap = new HashMap();
     public List<String> AllCmd;
 
     public CommandManage() {
-        AllCmd = Arrays.asList("reload" , "afk");
+        AllCmd = Arrays.asList("reload","afk");
         for (int i = 0; i < AllCmd.size(); i++) {
             try{
                 Class c = Class.forName("cn.whiteg.moeAfk.commands." + AllCmd.get(i));
@@ -20,6 +22,7 @@ public class CommandManage extends CommandInterface {
             }catch (ClassNotFoundException | InstantiationException | IllegalAccessException e){
                 e.printStackTrace();
             }
+
         }
     }
 
@@ -62,34 +65,68 @@ public class CommandManage extends CommandInterface {
             sender.sendMessage("§2[§bMoeAfk§2] §f当前允许挂机的最大在线玩家为: " + MoeAfk.plugin.setting.maxPlayer);
             return true;
         }
-        if (CommandMap.containsKey(args[0])){
-            return CommandMap.get(args[0]).onCommand(sender,cmd,label,args);
+
+        CommandInterface subCommand = commandMap.get(args[0]);
+        if (subCommand != null){
+            if (args.length > 1){
+                String[] subArgs = new String[args.length - 1];
+                System.arraycopy(args,1,subArgs,0,subArgs.length);
+                return subCommand.onCommand(sender,cmd,label,subArgs);
+            } else {
+                return subCommand.onCommand(sender,cmd,label,new String[]{});
+            }
         } else {
             sender.sendMessage("无效指令");
         }
+
         return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender,Command cmd,String label,String[] args) {
-        if (args.length > 1){
-            List ls = null;
-            if (CommandMap.containsKey(args[0])) ls = CommandMap.get(args[0]).onTabComplete(sender,cmd,label,args);
-            if (ls != null){
-                return getMatches(args[args.length - 1],ls);
-            }
-        }
-        for (int i = 0; i < args.length; i++) {
-            args[i] = args[i].toLowerCase();
-        }
         if (args.length == 1){
-            return getMatches(args[0],AllCmd);
+            return getMatches(args[0].toLowerCase(),AllCmd);
+        } else if (args.length > 1){
+            CommandInterface subCommand = commandMap.get(args[0]);
+            if (subCommand != null){
+                String[] subArgs = new String[args.length - 1];
+                System.arraycopy(args,1,subArgs,0,subArgs.length);
+                return subCommand.onTabComplete(sender,cmd,label,subArgs);
+            }
         }
         return null;
     }
 
-    public void regCommand(String var1,CommandInterface cmd) {
-        CommandMap.put(var1,cmd);
+    public void regCommand(String name,CommandInterface cmd) {
+        commandMap.put(name,cmd);
+        PluginCommand pc = MoeAfk.plugin.getCommand(name);
+        if (pc != null){
+            pc.setExecutor(subCommand);
+            pc.setTabCompleter(subCommand);
+        }
+    }
+
+    public class SubCommand extends CommandInterface {
+        @Override
+        public boolean onCommand(CommandSender commandSender,Command command,String s,String[] strings) {
+            CommandInterface ci = commandMap.get(command.getName());
+            if (ci == null) return false;
+            String[] args = new String[strings.length + 1];
+            args[0] = command.getName();
+            System.arraycopy(strings,0,args,1,strings.length);
+            ci.onCommand(commandSender,command,s,args);
+            return true;
+        }
+
+        @Override
+        public List<String> onTabComplete(CommandSender commandSender,Command command,String s,String[] strings) {
+            CommandInterface ci = commandMap.get(command.getName());
+            if (ci == null) return null;
+            String[] args = new String[strings.length + 1];
+            args[0] = command.getName();
+            System.arraycopy(strings,0,args,1,strings.length);
+            return ci.onTabComplete(commandSender,command,s,args);
+        }
     }
 
 }

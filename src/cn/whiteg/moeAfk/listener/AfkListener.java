@@ -15,7 +15,7 @@ public class AfkListener implements Listener {
         Player player = event.getPlayer();
         String dn = player.getPlayerListName();
         if (event.isAfk()){
-            broadcastMessage(dn + "§r §b双手离开了键盘");
+            broadcastMessage(player.getDisplayName() + "§r §b双手离开了键盘");
             if (!dn.contains(tag)){
                 player.setPlayerListName(dn + tag);
             }
