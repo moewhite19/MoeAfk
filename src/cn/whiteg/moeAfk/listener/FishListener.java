@@ -14,7 +14,7 @@ public class FishListener implements Listener {
         AfkTimer.AfkStaus s = MoeAfk.plugin.afkTimer.getAfkStaus(event.getPlayer());
         if (s.isAfkin()){
             Bukkit.getScheduler().runTask(MoeAfk.plugin,() -> {
-                event.getPlayer().kickPlayer("禁止挂机钓鱼");
+                event.getPlayer().kickPlayer("已禁止挂机钓鱼");
             });
         }
     }

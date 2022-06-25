@@ -5,21 +5,17 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
 public class Setting {
-
-    public final List<Long> Groups = new ArrayList<>();
     final int VER = 3;
     public FileConfiguration config;
     public boolean debug = false;
     public int maxPlayer = 0;
     public int maximumTime = 120;
-    public boolean sleepingIgnored = true;
-    public boolean antiAfkFishing = true;
+    public boolean sleepingIgnored;
+    public boolean antiAfkFishing;
 
 
     public Setting() {
@@ -47,8 +43,8 @@ public class Setting {
         debug = config.getBoolean("debug",debug);
         maxPlayer = config.getInt("maxPlayer",maxPlayer);
         maximumTime = config.getInt("MaximumTime",maximumTime);
-        sleepingIgnored = config.getBoolean(" SleepingIgnored",sleepingIgnored);
-        antiAfkFishing = config.getBoolean(" AntiAfkFishing",antiAfkFishing);
+        sleepingIgnored = config.getBoolean(" SleepingIgnored");
+        antiAfkFishing = config.getBoolean(" AntiAfkFishing");
     }
 
 }
