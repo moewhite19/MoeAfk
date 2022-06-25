@@ -7,7 +7,7 @@ import org.bukkit.event.Listener;
 
 public class SleepListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-    public void onJoinBed(PlayerAfkChanEvent event) {
+    public void onAfkStatusChan(PlayerAfkChanEvent event) {
         event.getPlayer().setSleepingIgnored(event.isAfk());
     }
 }
