@@ -16,6 +16,7 @@ public class Setting {
     public int maximumTime = 120;
     public boolean sleepingIgnored;
     public boolean antiAfkFishing;
+    public boolean affectsSpawning;
 
 
     public Setting() {
@@ -45,6 +46,7 @@ public class Setting {
         maximumTime = config.getInt("MaximumTime",maximumTime);
         sleepingIgnored = config.getBoolean(" SleepingIgnored");
         antiAfkFishing = config.getBoolean(" AntiAfkFishing");
+        affectsSpawning = config.getBoolean(" AffectsSpawning");
     }
 
 }

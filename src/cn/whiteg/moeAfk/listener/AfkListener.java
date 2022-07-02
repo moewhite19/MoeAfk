@@ -1,6 +1,8 @@
 package cn.whiteg.moeAfk.listener;
 
 import cn.whiteg.moeAfk.Event.PlayerAfkChanEvent;
+import cn.whiteg.moeAfk.MoeAfk;
+import cn.whiteg.moeAfk.Setting;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -43,6 +45,13 @@ public class AfkListener implements Listener {
 //                }
 //            }
 //            event.getPlayer().setPlayerListName(event.getPlayer().getDisplayName());
+            final Setting setting = MoeAfk.plugin.setting;
+            //挂机玩家忽略睡觉
+            if (setting.sleepingIgnored) event.getPlayer().setSleepingIgnored(event.isAfk());
+            //挂机不影响实体生成
+            if (setting.affectsSpawning) event.getPlayer().setAffectsSpawning(!event.isAfk());
+
+
         }
     }
 

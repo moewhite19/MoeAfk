@@ -8,3 +8,5 @@ MaximumTime: 120
 SleepingIgnored: true
 #反挂机钓鱼
 AntiAfkFishing: true
+#挂机时不会生成生物
+AffectsSpawning: true

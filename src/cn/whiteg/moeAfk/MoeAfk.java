@@ -2,7 +2,6 @@ package cn.whiteg.moeAfk;
 
 import cn.whiteg.moeAfk.listener.AfkListener;
 import cn.whiteg.moeAfk.listener.FishListener;
-import cn.whiteg.moeAfk.listener.SleepListener;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 
@@ -33,7 +32,6 @@ public class MoeAfk extends PluginBase {
         afkTimer = new AfkTimer();
         regListener(afkTimer);
         if (setting.antiAfkFishing) regListener(new FishListener());
-        if (setting.sleepingIgnored) regListener(new SleepListener());
         PluginCommand pc = getCommand("moeafk");
         if (pc != null){
             pc.setExecutor(mainCommand = new CommandManage());
